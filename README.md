@@ -1,3 +1,6 @@
+# Details about FSD-MIM and FD-FSD-MIM will be completed as soon as paper is accepted
+
+
 
 ## Requirements
 
@@ -10,8 +13,12 @@
 ## Implementation
 
 - **Generate adversarial examples**
-
-  Using `FSD_MIM.py` to generate adversarial examples,  you can run this attack as following
+  Using `npga.py` to generate Imperceptible adversarial examples,  you can run this attack as following
+  
+  ```bash
+  CUDA_VISIBLE_DEVICES=gpuid python npga.py --output_dir outputs
+  
+  Using `FSD_MIM.py` to generate highly transferable adversarial examples,  you can run this attack as following
   
   ```bash
   CUDA_VISIBLE_DEVICES=gpuid python FSD_MIM.py --output_dir outputs
