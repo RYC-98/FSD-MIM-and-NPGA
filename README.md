@@ -1,4 +1,4 @@
-# Details about FSD-MIM and FD-FSD-MIM will be completed as soon as paper is accepted
+# Details about FSD-MIM and FD-FSD-MIM will be completed as soon as the paper is accepted
 
 
 
