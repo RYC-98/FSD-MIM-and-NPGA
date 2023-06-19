@@ -33,6 +33,9 @@
   ```bash
   CUDA_VISIBLE_DEVICES=gpuid python verify.py
   ```
+  
+## Main Results
+![Results1](https://github.com/RYC-98/FSD-MIM-and-NPGA/blob/main/result1.png)
 
-
+![Results2](https://github.com/RYC-98/FSD-MIM-and-NPGA/blob/main/result2.png)
 
