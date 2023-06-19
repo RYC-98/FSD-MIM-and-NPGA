@@ -13,7 +13,7 @@
 ## Implementation
 
 - **Generate adversarial examples**
-- 
+
   Using `npga.py` to generate Imperceptible adversarial examples,  you can run this attack as following
   
   ```bash
