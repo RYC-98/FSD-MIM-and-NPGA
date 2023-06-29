@@ -35,6 +35,7 @@
   ```
   
 ## Main Results
+Number of augmented copies is set to 5 for each iteration.
 ![Results1](https://github.com/RYC-98/FSD-MIM-and-NPGA/blob/main/result1.png)
 
 ![Results2](https://github.com/RYC-98/FSD-MIM-and-NPGA/blob/main/result2.png)
