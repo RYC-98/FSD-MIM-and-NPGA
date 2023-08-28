@@ -142,79 +142,8 @@ DWT = DWT_2D_tiny(wavename= 'haar') # 'haar'
 IDWT = IDWT_2D_tiny(wavename= 'haar')
 
 def NPGA(images, gt, model, min, max):
-    """
-    :param images: the input images
-    :param gt: ground-truth
-    :param model: substitute model
-    :param mix: the mix the clip operation 
-    :param max: the max the clip operation
-    :return: the adversarial images
-    """
-    image_width = opt.image_width
-    momentum = opt.momentum
-    num_iter = opt.num_iter_set  # 
-    eps = opt.max_epsilon / 255.0
-    alpha = eps / num_iter
-    
-    x = images.clone() # clone
-    grad = 0 # 
-    N = opt.N
-    lamb = opt.lamb
-
-    lowFre_loss = nn.L1Loss(reduction='sum')
-    
-    ori = images.clone().to(device)
-    ori_ll = DWT(ori)
-    ori_ll = IDWT(ori_ll)
 
 
-    for i in range(num_iter):
-        noise = 0 
-        
-        
-        x = V(x, requires_grad = True)
-        adv_ll = DWT(x)
-        adv_ll = IDWT(adv_ll)
-        lowFre_cost = lowFre_loss(adv_ll, ori_ll)
-        gfre = -torch.autograd.grad(lowFre_cost, x)[0] # 
-        gfre = gfre / (torch.abs(gfre).mean([1, 2, 3], keepdim=True) + 1e-12)
-
-
-        x = V(x, requires_grad = True)
-        x = x.to(device)
-        output = model(x)
-        loss = F.cross_entropy(output[0], gt)
-        loss.backward()      
-        gcur = x.grad.data  
-        gmom = gcur / torch.abs(gcur).mean([1, 2, 3], keepdim=True)
-        gmom = momentum * grad + gmom
-        grad = gmom        
-        
-
-        need_orth_place = (torch.sum(gmom * gfre, dim = (1,2,3), keepdim=True) < 0).float()
-
-        ### orth1
-        
-        unchanged_gmom = (1.0 - need_orth_place) * gmom 
-        orth_gmom = gmom - gfre * torch.sum(gmom * gfre, dim = (1,2,3), keepdim=True) / (torch.sum(gfre * gfre, dim = (1,2,3), keepdim=True) + 1e-12)
-        changed_gmom = need_orth_place * orth_gmom    
-        noise1 = changed_gmom + unchanged_gmom 
-                
-        ### orth2
-        
-        unchanged_gfre = (1.0 - need_orth_place) * gfre #       
-        orth_gfre = gfre - gmom * torch.sum(gmom * gfre, dim = (1,2,3), keepdim=True) / (torch.sum(gmom * gmom, dim = (1,2,3), keepdim=True) + 1e-12)
-        changed_gfre = need_orth_place * orth_gfre # 
-        noise2 = changed_gfre + unchanged_gfre 
-        
-        # add    
-        noise = lamb * noise1 +  noise2
-        
-        # no sign, no scale
-        x = x + alpha * noise 
-   
-        x = clip_by_tensor(x, min, max)
-    return x.detach()
 
 def main():
 
