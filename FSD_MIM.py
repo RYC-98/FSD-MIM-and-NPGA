@@ -135,7 +135,63 @@ def get_model(net_name, model_dir):
 
 ### Details will be completed as soon as the paper is accepted ###
 def FSD_MIM(images, gt, model, min, max):
+    image_width = opt.image_width
+    momentum = opt.momentum
+    num_iter = 10
+    eps = opt.max_epsilon / 255.0
+    
+    bound = opt.bound / 255.0
+    line = opt.line
+    
+    alpha = eps / num_iter
+    x = images.clone() # clone
+    grad = 0
+    N = opt.N 
 
+    for i in range(num_iter):
+        
+            
+        ne_allgrad = 0 # 
+        for n in range(N):    # 
+        
+            randnoise = torch.randn_like(x).uniform_(-bound, bound)
+            randnoise = randnoise.to(device)
+            x_n = (x + randnoise).to(device)
+            x_n_dct = dct_2d(x_n)     
+            x_n_dct[:,:, :line, :line] = x_n_dct[:,:, :line, :line] * (1 - n / N)
+            x_n_dct[:,:, line:, line:] = x_n_dct[:,:, line:, line:] * (1 + n / N)            
+            rd = clip_by_tensor(torch.normal(torch.tensor(1.0),torch.tensor(1.0)), 1 - n / N, 1 + n / N)
+            x_n_dct[:,:, line:, :line] = x_n_dct[:,:, line:, :line] * rd
+            x_n_dct[:,:, :line, line:] = x_n_dct[:,:, :line, line:] * rd
+            x_neighbor = idct_2d(x_n_dct)
+            x_neighbor = V(x_neighbor, requires_grad = True)
+            ne_output = model(x_neighbor)                 
+            
+            ## batchsize == 1 
+            # ne_loss = F.cross_entropy(ne_output[0].unsqueeze(0), gt)
+            
+            
+            ## batchsize not 1 
+            ne_loss = F.cross_entropy(ne_output[0], gt)
+            
+            
+            ne_loss.backward() 
+            ne_allgrad += x_neighbor.grad.data
+
+        noise = ne_allgrad / N
+
+
+        # TI-FGSM https://arxiv.org/pdf/1904.02884.pdf
+        # noise = F.conv2d(noise, T_kernel, bias=None, stride=1, padding=(3, 3), groups=3)
+
+        ## MI-FGSM https://arxiv.org/pdf/1710.06081.pdf
+        noise = noise / torch.abs(noise).mean([1, 2, 3], keepdim=True)
+        noise = momentum * grad + noise
+        grad = noise
+
+        x = x + alpha * torch.sign(noise)
+        x = clip_by_tensor(x, min, max)
+    return x.detach()
 ##################################################################
 
 
