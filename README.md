@@ -1,4 +1,4 @@
-# Details about FSD-MIM will be completed as soon as the paper is accepted
+# Frequency-based methods for improving the imperceptibility and transferability of adversarial examples
 
 
 
