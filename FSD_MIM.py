@@ -180,7 +180,26 @@ def FSD_MIM(images, gt, model, min, max):
 
         noise = ne_allgrad / N
 
+        
+        # ### grad drop ###
+        # noise_dct = dct_2d(noise)
+                
+        # noise_dct_sum = torch.sum(torch.abs(noise_dct),[1])
+        # noise_dct_reshape = noise_dct_sum.reshape(x.shape[0], -1)
+        # top_k = torch.topk(noise_dct_reshape, opt.k, dim=1)[0][:,-1]
+        # top_k = top_k.unsqueeze(1)
+        # top_k = top_k.unsqueeze(1)
+        # m_small = (noise_dct_sum < top_k).float()
+        # m_large = 1 - m_small
+        # m1 = opt.gamma * m_small + m_large
+        # m = torch.stack((m1,m1,m1), dim=1)
+        # noise_dct_drop = m * noise_dct
+        
+        # noise = idct_2d(noise_dct_drop)      
+        # ### over ###
 
+        
+        
         # TI-FGSM https://arxiv.org/pdf/1904.02884.pdf
         # noise = F.conv2d(noise, T_kernel, bias=None, stride=1, padding=(3, 3), groups=3)
 
