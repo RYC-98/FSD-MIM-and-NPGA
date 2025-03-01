@@ -181,7 +181,7 @@ def FSD_MIM(images, gt, model, min, max):
         noise = ne_allgrad / N
 
         
-        # ### grad drop ###
+        # ### grad drop (effective for adversarially trained models) ###
         # noise_dct = dct_2d(noise)
                 
         # noise_dct_sum = torch.sum(torch.abs(noise_dct),[1])
